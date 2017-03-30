@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <title>Sebal Scheduler Monitor</title>
+  <meta name="keywords" content="Fogbow Cloud Members Monitor" />
+  <meta name="description" content="Fogbow Cloud Members Monitor">
+  <meta name="author" content="LSD - Laboratório de Sistemas Distribuidos">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Font CSS (Via CDN) -->
+  <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel='stylesheet' type='text/css' href='css/app.css'>
+  <link rel='stylesheet' type='text/css' href="https://cdn.jsdelivr.net/angular.chartjs/0.7.6/angular-chart.css">
+
+
+</head>
+
+<body class="ng-clock" ng-app="fmmDashboard">
+  <!-- Start: Main -->
+  <div style="height:100%" ng-controller="MainController">
+    <span class='ng-clock'></span>
+    <div ng-view style="height:100%"></div>
+  </div>
+  <!-- End: Main -->
+ 
+
+  <!-- BEGIN: PAGE SCRIPTS -->
+  <script src="https://use.fontawesome.com/df689f15ad.js"></script>
+  <!-- Angular -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular-route.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/angular.chartjs/0.8.0/angular-chart.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/angular.chartjs/1.1.1/angular-chart.min.js.map"></script> -->
+  
+  <!-- <script src="https://cdn.jsdelivr.net/angular.chartjs/1.1.1/angular-chart.css.map"></script> -->
+  <script src="mainApp.js"></script>
+  <script src="controllers/appControllers.js"></script>
+  <!-- <script src="services/appServices.js"></script> -->
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <!-- Bootstrap -->  
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- END: PAGE SCRIPTS -->
+
+</body>
+
+</html>

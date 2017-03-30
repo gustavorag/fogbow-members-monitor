@@ -1,0 +1,68 @@
+<!-- HEADER AND NAVBAR OF SEBAL DASHBOARD-->
+<header>
+    <nav class="fmm-nav">
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+    </nav>
+</header>
+
+<div class="fmm-content" ng-controller="MonitorController">
+  <div ng-repeat="m in members" class="panel panel-default fmm-member-panel">
+    <div class="panel-heading">
+      <h3 class="panel-title">{{m.name}}</h3>
+    </div>
+    <div class="panel-body">
+      <div class="row" style="padding: 8px 8px 8px 8px;">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-6" style="height: 100px">
+                <canvas id="pie-memory-{{m.memoryChart.id}}" options="options" class="chart chart-pie chart-xs ng-isolate-scope" chart-data="m.memoryChart.data" chart-options="options" chart-labels="m.memoryChart.labels" colours="m.memoryChart.colours" legend="true">
+                </canvas>              
+            </div>
+            <div class="col-md-6">
+                <canvas id="pie-cpu-{{m.cpuChart.id}}" options="options" class="chart chart-pie chart-xs ng-isolate-scope" chart-data="m.cpuChart.data" chart-options="options" chart-labels="m.cpuChart.labels" colours="m.cpuChart.colours" legend="true">
+                </canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <canvas id="pie-instances-{{m.instanceChart.id}}" options="options" class="chart chart-pie chart-xs ng-isolate-scope" chart-data="m.instanceChart.data" chart-options="options" chart-labels="m.instanceChart.labels" colours="m.instanceChart.colours" legend="true">
+                </canvas>
+            </div>
+            <div class="col-md-3">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <br>
+              <div class="instances-label-block">
+                <i class="fa fa-desktop free-instance" aria-hidden="true"></i> Instances in Available
+                <i class="fa fa-desktop used-instance" aria-hidden="true"></i> Instances in Use
+              </div>
+              <div class="instances-usage-block">
+                <div ng-repeat="line in m.lines track by $index" class="row">
+                  <i ng-repeat="intance in line.itens track by $index" class="{{intance.css}}" aria-hidden="true"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+      <br>
+
+    </div>
+  </div>
+  <div class="fmm-footer"/>
+</div>
+
