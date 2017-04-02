@@ -66,7 +66,7 @@ fmmControllers.controller('MonitorController', function($scope, $http, $log,
 		var freeMem = 100 - member.memUsage;
 		var freeCpu = 100 - member.cpuUsage;
 		var freenstance	= 100 - member.instanceUsage;
-		var instancePerLine = 5;
+		var instancePerLine = (member.intancesQuota <= 30) ? 5 : 10;
 		
 		membChart.memoryChart.data.push(member.memUsage);
 		membChart.memoryChart.data.push(freeMem);
