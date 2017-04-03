@@ -17,12 +17,12 @@ var publicKey="";
 var username="fogbowadm";
 var password="f0gb0w4dm";
 var authUrl="ldap://ldap.lsd.ufcg.edu.br:389";
-var managerUrl="http://10.11.4.172:8182"
+var managerUrl="http://10.11.4.234:8182"
 
 
 var baseDiretory="";
 var tokenFile = "";
-var token;
+var token = "eyJsb2duaW4iOiJmb2dib3dhZG0iLCJuYW1lIjoiRm9nYm93IEFETSIsImV4cGlyYXRpb25EYXRlIjoxNTIyNjQ2Nzk3MDA1fSEjIU1rRE9mR3lkcDBGYzNaSFNLTEU2TloyeEtaa1p3WWpUeGpaZURwSU5PdmtxNW5UaWVlUmtOOGVIcFQvZjVBYWNHMExML2lySjBzOG9qNXJualcvVm1LSHBTMHNCR3ZkZGdER0JRRjhYbGtaRXdHU00rVmJZT0ZWNWxocTFpRGl0N2Z3dGxXdHRubU41Qno3YTBUcElNQmNxSjg3UWROZ2RUdXY4b3cyS2dKdXBrV0JEN20valZBQlVER0NpUXRqcXRIMDNPcGh5OEFMc2FNSTdHa012djVKVFdMRFIrVVd3L25DRXRJT3JEUkRmWGlvV2g5ZUFoVkRHWUtKckhjSEVPYWxVQ2Nja0N0by9wRjl6d1A2RDFWRkh2QW9hNlhKYnM4NE4xSEFjQXRIQ3FvdnpJeDV1LzJsVGZwQkkwQm9vc0ZNMWQweTJacE53cEVvNVllSEVWQT09";
 
 var createTokenBase=" token --create --type ldap ";
 
@@ -133,6 +133,8 @@ function startApp(){
 						var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "+item+" --auth-token "+token;
 						var CLI_GET_MEMBER_DETAIL = CLI_BASE_COMMAND+getMemberDetailCli;
 						
+						console.log("Executing: " CLI_GET_MEMBER_DETAIL);
+
 						var newMember = {
 							name:item,
 							memUsage:0,
@@ -142,8 +144,8 @@ function startApp(){
 							intancesQuota:0
 						}
 						var childTest = exec(CLI_GET_MEMBER_DETAIL, function (error, stdout, stderr) {
-							console.log("Stdout: "+stdout);
-							console.log("Stderr: "+stderr);
+							//console.log("Stdout: "+stdout);
+							//console.log("Stderr: "+stderr);
 							if (error !== null) {
 								console.log('exec error: ' + error);
 							}else{
@@ -157,10 +159,11 @@ function startApp(){
 								newMember = processMemberDetail(newMember, memberDetails);
 
 								membersJson.push(newMember);
-								if(index+1 == members.length){
-									res.send(membersJson);
-									res.end();
-								}
+								
+							}
+							if(index+1 == members.length){
+								res.send(membersJson);
+								res.end();
 							}
 						});
 						// var detailsString = "X-OCCI-Attribute: cpuQuota=60\n"+
