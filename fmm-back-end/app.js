@@ -129,65 +129,66 @@ function startApp(){
 				if(Array.isArray(members)){
 					
 					members.forEach(function(item, index){
-						
-						var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "+item+" --auth-token "+token;
-						var CLI_GET_MEMBER_DETAIL = CLI_BASE_COMMAND+getMemberDetailCli;
-						
-						console.log("Executing: " CLI_GET_MEMBER_DETAIL);
+						if(item){
+							var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "+item+" --auth-token "+token;
+							var CLI_GET_MEMBER_DETAIL = CLI_BASE_COMMAND+getMemberDetailCli;
+							
+							console.log("Executing: " CLI_GET_MEMBER_DETAIL);
 
-						var newMember = {
-							name:item,
-							memUsage:0,
-							cpuUsage:0,
-							instanceUsage:0,
-							instancesInUse:0,
-							intancesQuota:0
+							var newMember = {
+								name:item,
+								memUsage:0,
+								cpuUsage:0,
+								instanceUsage:0,
+								instancesInUse:0,
+								intancesQuota:0
+							}
+							var childTest = exec(CLI_GET_MEMBER_DETAIL, function (error, stdout, stderr) {
+								//console.log("Stdout: "+stdout);
+								//console.log("Stderr: "+stderr);
+								if (error !== null) {
+									console.log('exec error: ' + error);
+								}else{
+									
+									var detailsString = stdout.replace(/(\r\n|\n|\r)/gm, ';');
+									detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
+									//console.log('Detalhes: '+JSON.stringify(detailsString));
+
+									var memberDetails = extractMemberDetail(detailsString);
+
+									newMember = processMemberDetail(newMember, memberDetails);
+
+									membersJson.push(newMember);
+									
+								}
+								if(index+1 == members.length){
+									res.send(membersJson);
+									res.end();
+								}
+							});
+							// var detailsString = "X-OCCI-Attribute: cpuQuota=60\n"+
+							// 					"X-OCCI-Attribute: cpuInUse=20\n"+
+							// 					"X-OCCI-Attribute: cpuInUseByUser=16\n"+
+							// 					"X-OCCI-Attribute: memQuota=77824\n"+
+							// 					"X-OCCI-Attribute: memInUse=65536\n"+
+							// 					"X-OCCI-Attribute: memInUseByUser=57344\n"+
+							// 					"X-OCCI-Attribute: instancesQuota=30\n"+
+							// 					"X-OCCI-Attribute: instancesInUse=6\n"+
+							// 					"X-OCCI-Attribute: instancesInUseByUser=2";
+
+							
+							// detailsString = detailsString.replace(/(\r\n|\n|\r)/gm, ';');
+							// detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
+							// //console.log('Detalhes: '+JSON.stringify(detailsString));
+
+							// var memberDetails = extractMemberDetail(detailsString);
+
+							// newMember = processMemberDetail(newMember, memberDetails);
+
+							// membersJson.push(newMember);
 						}
-						var childTest = exec(CLI_GET_MEMBER_DETAIL, function (error, stdout, stderr) {
-							//console.log("Stdout: "+stdout);
-							//console.log("Stderr: "+stderr);
-							if (error !== null) {
-								console.log('exec error: ' + error);
-							}else{
-								
-								var detailsString = stdout.replace(/(\r\n|\n|\r)/gm, ';');
-								detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
-								//console.log('Detalhes: '+JSON.stringify(detailsString));
-
-								var memberDetails = extractMemberDetail(detailsString);
-
-								newMember = processMemberDetail(newMember, memberDetails);
-
-								membersJson.push(newMember);
-								
-							}
-							if(index+1 == members.length){
-								res.send(membersJson);
-								res.end();
-							}
-						});
-						// var detailsString = "X-OCCI-Attribute: cpuQuota=60\n"+
-						// 					"X-OCCI-Attribute: cpuInUse=20\n"+
-						// 					"X-OCCI-Attribute: cpuInUseByUser=16\n"+
-						// 					"X-OCCI-Attribute: memQuota=77824\n"+
-						// 					"X-OCCI-Attribute: memInUse=65536\n"+
-						// 					"X-OCCI-Attribute: memInUseByUser=57344\n"+
-						// 					"X-OCCI-Attribute: instancesQuota=30\n"+
-						// 					"X-OCCI-Attribute: instancesInUse=6\n"+
-						// 					"X-OCCI-Attribute: instancesInUseByUser=2";
-
-						
-						// detailsString = detailsString.replace(/(\r\n|\n|\r)/gm, ';');
-						// detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
-						// //console.log('Detalhes: '+JSON.stringify(detailsString));
-
-						// var memberDetails = extractMemberDetail(detailsString);
-
-						// newMember = processMemberDetail(newMember, memberDetails);
-
-						// membersJson.push(newMember);
-
 					});
+
 				}
 
 				// res.send(membersJson);
