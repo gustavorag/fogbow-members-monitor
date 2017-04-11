@@ -10,14 +10,14 @@ var port = 8800;
 
 var membersDetail;
 
-var baseLdap="base";
+var baseLdap="dc=lsd,dc=ufcg,dc=edu,dc=br";
 var encrypt="";
 var privateKey="";
 var publicKey="";
-var username="use";
-var password="pass";
-var authUrl="ldap://host:post";
-var managerUrl="http://localhost:8182"
+var username="fogbowadm";
+var password="f0gb0w4dm";
+var authUrl="ldap://ldap.lsd.ufcg.edu.br:389";
+var managerUrl="http://10.11.4.234:8182"
 
 
 var baseDiretory="";
@@ -63,8 +63,12 @@ var initialConfiguration = function(){
 	  if (error !== null) {
 	    console.log('exec error: ' + error);
 	  }else{
-		CLI_BASE_COMMAND = "java -cp "+baseDiretory+"/fogbow-components/fogbow-cli-0.0.1-SNAPSHOT-jar-with-dependencies.jar org.fogbowcloud.cli.Main"
-		CLI_CREATE_TOKEN = CLI_BASE_COMMAND+createTokenBase+"-Dbase="+baseLdap+" -Dencrypt= -DprivateKey="+privateKey+" -DpublicKey="+publicKey+" -Dusername="+username+" -Dpassword="+password+" -DauthUrl="+authUrl
+		CLI_BASE_COMMAND = "java -cp "+baseDiretory
+		+"/fogbow-components/fogbow-cli-0.0.1-SNAPSHOT-jar-with-dependencies.jar "
+		+"org.fogbowcloud.cli.Main "
+		CLI_CREATE_TOKEN = CLI_BASE_COMMAND+createTokenBase+"-Dbase="+baseLdap
+		+" -Dencrypt= -DprivateKey="+privateKey+" -DpublicKey="+publicKey+" -Dusername="
+		+username+" -Dpassword="+password+" -DauthUrl="+authUrl
 		
 	  	startApp();
 	  }
@@ -90,8 +94,10 @@ var extractMemberDetail = function(details){
 	return detailsJson;
 }
 
+var countCall = 0;
+
 var processMemberDetail = function(member, details){
-	console.log("Processing Member details: "+member+" \n "+details)
+	console.log("Processing Member details: "+member+" \n "+JSON.stringify(details))
 	//Calculate Usages in %
 	if(details.memInUse > 0){
 		member.memUsage = ((details.memInUse * 100) / details.memQuota).toFixed(2);	
@@ -119,78 +125,103 @@ var processMemberDetail = function(member, details){
 function startApp(){
 
 	var fogbowApi = {
-		getMembers: function(req, res){
+		countCall : 0,
+		getMemberDetail: function(req, res, memberId){
+			
+			var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "
+			+memberId+" --auth-token "+token;
+			var CLI_GET_MEMBER_DETAIL = CLI_BASE_COMMAND+getMemberDetailCli;
+			
+			console.log("Executing: "+CLI_GET_MEMBER_DETAIL);
 
-			var getMemberDetail = function(req, res, members){
-				
-				var membersErrorCount = 0;
-				var membersJson = [];
-				var membersValidate = [];
-
-				if(Array.isArray(members)){
-
-					members.forEach(function(item, index){
-						console.log('Verificando '+item)
-						if(item){
-							membersValidate.push(item);
-						}
-					});
-					console.log('Members Validate: '+membersValidate);
-					membersValidate.forEach(function(item, index){
-						
-						var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "+item+" --auth-token "+token;
-						var CLI_GET_MEMBER_DETAIL = CLI_BASE_COMMAND+getMemberDetailCli;
-						
-						//console.log("Executing: "+CLI_GET_MEMBER_DETAIL);
-
-						var newMember = {
-							name:item,
-							memUsage:0,
-							cpuUsage:0,
-							instanceUsage:0,
-							instancesInUse:0,
-							intancesQuota:0
-						}
-						var childTest = exec(CLI_GET_MEMBER_DETAIL, function (error, stdout, stderr) {
-							//console.log("Stdout: "+stdout);
-							//console.log("Stderr: "+stderr);
-							if (error !== null) {
-								membersErrorCount++;
-								console.log('exec error: ' + error);
-							}else{
-								
-								var detailsString = stdout.replace(/(\r\n|\n|\r)/gm, ';');
-								if(detailsString.match(/X-OCCI-Attribute: /)){
-
-									detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
-									//console.log('Detalhes: '+JSON.stringify(detailsString));
-
-									var memberDetails = extractMemberDetail(detailsString);
-
-									newMember = processMemberDetail(newMember, memberDetails);
-
-									membersJson.push(newMember);
-								}else{
-									membersErrorCount++
-								}
-							}
-							console.log("Members Cash Size "+membersJson.length);
-							console.log("Total valide responses "+(membersValidate.length - membersErrorCount))
-							//Make sure that the last response from fogbow will write the response for the frontend
-							if(membersJson.length >= (membersValidate.length - membersErrorCount)){
-								res.send(membersJson);
-								res.end();
-							}
-							
-						});
-						
-					});
-
-				}
+			var newMember = {
+				name:memberId,
+				memUsage:0,
+				cpuUsage:0,
+				instanceUsage:0,
+				instancesInUse:0,
+				intancesQuota:0
 			}
+			var childTest = exec(CLI_GET_MEMBER_DETAIL, function (error, stdout, stderr) {
+				//console.log("Stdout: "+stdout);
+				//console.log("Stderr: "+stderr);
+				if (error !== null) {
+					membersErrorCount++;
+					console.log('exec error: ' + error);
+				}else{
+					
+					var detailsString = stdout.replace(/(\r\n|\n|\r)/gm, ';');
+					if(detailsString.match(/X-OCCI-Attribute: /)){
+
+						detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
+						//console.log('Detalhes: '+JSON.stringify(detailsString));
+
+						var memberDetails = extractMemberDetail(detailsString);
+
+						newMember = processMemberDetail(newMember, memberDetails);
+
+						membersJson.push(newMember);
+
+						res.send(newMember);
+						res.end();
+
+					}else{
+						membersErrorCount++
+					}
+				}
+				
+			});
+
+			// var newMember = {
+			// 	name:memberId,
+			// 	memUsage:0,
+			// 	cpuUsage:0,
+			// 	instanceUsage:0,
+			// 	instancesInUse:0,
+			// 	intancesQuota:0
+			// };
+			// var detailsString = "";
+
+			// this.countCall = this.countCall+1;
+			// console.log("Call number "+this.countCall);
+			// if(this.countCall > 20){
+			// 	detailsString = "X-OCCI-Attribute: cpuQuota=60\n"+
+			// 	"X-OCCI-Attribute: cpuInUse=50\n"+
+			// 	"X-OCCI-Attribute: cpuInUseByUser=16\n"+
+			// 	"X-OCCI-Attribute: memQuota=77824\n"+
+			// 	"X-OCCI-Attribute: memInUse=65536\n"+
+			// 	"X-OCCI-Attribute: memInUseByUser=57344\n"+
+			// 	"X-OCCI-Attribute: instancesQuota=15\n"+
+			// 	"X-OCCI-Attribute: instancesInUse=10\n"+
+			// 	"X-OCCI-Attribute: instancesInUseByUser=2"
+			// }else{
+			// 	detailsString= "X-OCCI-Attribute: cpuQuota=60\n"+
+			// 	"X-OCCI-Attribute: cpuInUse=20\n"+
+			// 	"X-OCCI-Attribute: cpuInUseByUser=16\n"+
+			// 	"X-OCCI-Attribute: memQuota=77824\n"+
+			// 	"X-OCCI-Attribute: memInUse=65536\n"+
+			// 	"X-OCCI-Attribute: memInUseByUser=57344\n"+
+			// 	"X-OCCI-Attribute: instancesQuota=10\n"+
+			// 	"X-OCCI-Attribute: instancesInUse=6\n"+
+			// 	"X-OCCI-Attribute: instancesInUseByUser=2"	
+			// }
+
+			// detailsString = detailsString.replace(/(\r\n|\n|\r)/gm, ';');
+			// detailsString = detailsString.replace(/X-OCCI-Attribute: /g, '');
+
+			// var memberDetails = extractMemberDetail(detailsString);
+			// newMember = processMemberDetail(newMember, memberDetails);
+			// console.log("Returning member detail")
+			// res.send(newMember);
+			// res.end();
+				
+		},
+		getMembers: function(req, res){
 
 			var getMembersCli=" member --url "+managerUrl+" --auth-token "+token;
 			var CLI_GET_MEMBERS = CLI_BASE_COMMAND+getMembersCli;
+			var members;
+			var membersValidate = [];
 
 			console.log("Executing: "+CLI_GET_MEMBERS);
 			var childTest = exec(CLI_GET_MEMBERS, function (error, stdout, stderr) {
@@ -198,11 +229,29 @@ function startApp(){
 				if (error !== null) {
 					console.log('exec error: ' + error);
 				}else{
+
 					stdout = stdout.replace(/(\r\n|\n|\r)/gm, ';');
-					getMemberDetail(req, res, stdout.split(';'));
+					members = stdout.split(';')
+
+					if(Array.isArray(members)){
+
+						members.forEach(function(item, index){
+							console.log('Verificando '+item)
+							if(item){
+								membersValidate.push(item);
+							}
+						});
+
+					}
+
+					res.send(membersValidate);
+					res.end();
+
 				}
 			});
 
+			// res.send(["catch-all.manager.naf.lsd.ufcg.edu.br"]);
+			// res.end();
 			
 		}
 	};
@@ -221,9 +270,14 @@ function startApp(){
 		}
 	});
 
-	//Return index page.
+	//Return list of members
 	app.get("/members", function(req, res) {
 		fogbowApi.getMembers(req, res);
+	});
+
+	//Return details of specific member.
+	app.get("/members/:memberId", function(req, res) {
+		fogbowApi.getMemberDetail(req, res, req.params.memberId);
 	});
 
 }

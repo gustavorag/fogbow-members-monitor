@@ -18,7 +18,10 @@
       <h3 class="panel-title">{{m.name}}</h3>
     </div>
     <div class="panel-body">
-      <div class="row" style="padding: 8px 8px 8px 8px;">
+      <div ng-show="m.status=='loading'" class="row" style="padding: 8px 8px 8px 8px; text-align: center;">
+        <img src="../images/loading4.gif" alt="Smiley face" class="loading-chart">
+      </div>
+      <div ng-show="m.status=='ok'" class="row" style="padding: 8px 8px 8px 8px;">
         <div class="col-md-6">
           <div class="row">
             <div class="col-md-6" style="height: 100px">

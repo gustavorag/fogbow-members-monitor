@@ -31,7 +31,7 @@ var CLI_CREATE_TOKEN = "";
 // });
 
 
-
+var countCall = 0;
 
 var createTokenFunc = function(startApiFunc){
 
@@ -100,7 +100,7 @@ var startApi = function(){
 			// });
 			//var stdout = "catch-all.manager.naf.lsd.ufcg.edu.br\\nfogbow-manager-rec.compute.rnp.br\\nlsd.manager.naf.lsd.ufcg.edu.br\\nmanager.naf.ufscar.br\\ntu.dresden.manager.naf.lsd.ufcg.edu.br"
 			//return stdout.split(/(\r\n|\n|\r)/gm);
-			return ["catch-all.manager.naf.lsd.ufcg.edu.br"]
+			return ["catch-all.manager.naf.lsd.ufcg.edu.br", "manager.naf.lsd.ufcg.edu.br"]
 		},
 		getMemberDetail: function(memberId){
 			// var getMemberDetailCli=" member --url "+managerUrl+" --quota --id "+memberId+" --auth-token "+token;
@@ -116,7 +116,19 @@ var startApi = function(){
 			// 		return stdout.split(/(\r\n|\n|\r)/gm);
 			// 	}
 			// });
-			return "X-OCCI-Attribute: cpuQuota=60\n"+
+			countCall = countCall++;
+			if(countCall > 20){
+				return "X-OCCI-Attribute: cpuQuota=60\n"+
+				"X-OCCI-Attribute: cpuInUse=50\n"+
+				"X-OCCI-Attribute: cpuInUseByUser=16\n"+
+				"X-OCCI-Attribute: memQuota=77824\n"+
+				"X-OCCI-Attribute: memInUse=65536\n"+
+				"X-OCCI-Attribute: memInUseByUser=57344\n"+
+				"X-OCCI-Attribute: instancesQuota=15\n"+
+				"X-OCCI-Attribute: instancesInUse=10\n"+
+				"X-OCCI-Attribute: instancesInUseByUser=2"
+			}else{
+				return "X-OCCI-Attribute: cpuQuota=60\n"+
 				"X-OCCI-Attribute: cpuInUse=20\n"+
 				"X-OCCI-Attribute: cpuInUseByUser=16\n"+
 				"X-OCCI-Attribute: memQuota=77824\n"+
@@ -124,7 +136,9 @@ var startApi = function(){
 				"X-OCCI-Attribute: memInUseByUser=57344\n"+
 				"X-OCCI-Attribute: instancesQuota=10\n"+
 				"X-OCCI-Attribute: instancesInUse=6\n"+
-				"X-OCCI-Attribute: instancesInUseByUser=2"
+				"X-OCCI-Attribute: instancesInUseByUser=2"	
+			}
+			
 		}
 	};
 
@@ -132,29 +146,6 @@ var startApi = function(){
 	module.exports = api;
 }
 
-// ldap_identity_url=ldap://ldap.lsd.ufcg.edu.br:389
-// ldap_base=dc=lsd,dc=ufcg,dc=edu,dc=br
-// ldap_encrypt_type=
-
-// token --create --type ldap -Dbase=dc=lsd,dc=ufcg,dc=edu,dc=br -Dencrypt= -DprivateKey=/home/gustavorag/keys/private_key.pem -DpublicKey=/home/gustavorag/keys/public_key.pem -Dusername=fogbowadm -Dpassword=f0gb0w4dm -DauthUrl=ldap://ldap.lsd.ufcg.edu.br:389 --url http://10.11.4.172:8182
-
-//token --create --type ldap --url http://10.11.4.172:8182 -Dbase=dc=lsd,dc=ufcg,dc=edu,dc=br -Dencrypt= -DprivateKey=/home/gustavorag/keys/private_key.pem -DpublicKey=/home/gustavorag/keys/public_key.pem -Dusername=fogbowadm -Dpassword=f0gb0w4dm -DauthUrl=ldap://ldap.lsd.ufcg.edu.br:389
-
- //--url http://10.11.4.172:8182 
-// "token --create --type ldap -Dbase=dc=lsd,dc=ufcg,dc=edu,dc=br -Dencrypt= -DprivateKey=/home/gustavorag/keys/private_key.pem -DpublicKey=/home/gustavorag/keys/public_key.pem -Dusername=fogbowadm -Dpassword=f0gb0w4dm -DauthUrl=ldap://ldap.lsd.ufcg.edu.br:389"
-
-// /home/gustavorag/fog-cli
-
-// /home/ubuntu/fogbow-components/fogbow-cli
 
 
-//"java -cp fogbow-cli-0.0.1-SNAPSHOT-jar-with-dependencies.jar org.fogbowcloud.cli.Main member --url http://10.11.4.172:8182 --auth-token eyJsb2duaW4iOiJmb2dib3dhZG0iLCJuYW1lIjoiRm9nYm93IEFETSIsImV4cGlyYXRpb25EYXRlIjoxNTIyNjM2ODM2NTU3fSEjIVpxZTNnbzh5YThhTmVnVklrWkJoa2V4ZmxIRTE4Zk9xQkJUTWNVWFkvbHRMWnBIRnNWTzNxWHhmS2U5eWNwUGdvRlBZc2dDOEVSZVNZeEdhWS92OEZYTWZWMmZqSzVUSndibWhTQzdUOTJEa1pKOUw5RTBYTXlGSnVaTFRCakJPVERVdi9kRmZIZlhIZEhuU0hjUG9ISFhVQTlXN004N2pEekJ0YmFzLzMwL0t5MnNtNGprU1M1N0pxTUl3UW1NQTl6Y0dHS2xCWm1md3JERjNXS0ZxVHlQUEFHdGNMZ01weE4wMURYTjQyNUxCdTZmNzlEcmdzT0lnNXpIVzhHN3pDQkJBa3VITk8rL0hEemFCam1UdGpxSllXcjF5elJMbjJtTWcrM29rV2JveUVCQk9JV0dvb1M3N0U1US9DU2Z4NGdJN0htU2YybHUwdE1PdUVHY0FFdz09"
-
-// catch-all.manager.naf.lsd.ufcg.edu.br
-// fogbow-manager-rec.compute.rnp.br
-// lsd.manager.naf.lsd.ufcg.edu.br
-// manager.naf.ufscar.br
-// tu.dresden.manager.naf.lsd.ufcg.edu.br
-
-//java -cp fogbow-cli-0.0.1-SNAPSHOT-jar-with-dependencies.jar org.fogbowcloud.cli.Main member --quota --id catch-all.manager.naf.lsd.ufcg.edu.br --auth-token eyJsb2duaW4iOiJmb2dib3dhZG0iLCJuYW1lIjoiRm9nYm93IEFETSIsImV4cGlyYXRpb25EYXRlIjoxNTIyNjQ2Nzk3MDA1fSEjIU1rRE9mR3lkcDBGYzNaSFNLTEU2TloyeEtaa1p3WWpUeGpaZURwSU5PdmtxNW5UaWVlUmtOOGVIcFQvZjVBYWNHMExML2lySjBzOG9qNXJualcvVm1LSHBTMHNCR3ZkZGdER0JRRjhYbGtaRXdHU00rVmJZT0ZWNWxocTFpRGl0N2Z3dGxXdHRubU41Qno3YTBUcElNQmNxSjg3UWROZ2RUdXY4b3cyS2dKdXBrV0JEN20valZBQlVER0NpUXRqcXRIMDNPcGh5OEFMc2FNSTdHa012djVKVFdMRFIrVVd3L25DRXRJT3JEUkRmWGlvV2g5ZUFoVkRHWUtKckhjSEVPYWxVQ2Nja0N0by9wRjl6d1A2RDFWRkh2QW9hNlhKYnM4NE4xSEFjQXRIQ3FvdnpJeDV1LzJsVGZwQkkwQm9vc0ZNMWQweTJacE53cEVvNVllSEVWQT09
-//headers = {'content-type': 'text/occi', 'X-Auth-Token' : token}
+java -cp /home/gustavorag/git/fogbow-members-monitor/fmm-back-end/fogbow-components/fogbow-cli-0.0.1-SNAPSHOT-jar-with-dependencies.jar org.fogbowcloud.cli.Main  member --url http://10.11.4.234:8182 --auth-token eyJsb2duaW4iOiJmb2dib3dhZG0iLCJuYW1lIjoiRm9nYm93IEFETSIsImV4cGlyYXRpb25EYXRlIjoxNTIyNjQ2Nzk3MDA1fSEjIU1rRE9mR3lkcDBGYzNaSFNLTEU2TloyeEtaa1p3WWpUeGpaZURwSU5PdmtxNW5UaWVlUmtOOGVIcFQvZjVBYWNHMExML2lySjBzOG9qNXJualcvVm1LSHBTMHNCR3ZkZGdER0JRRjhYbGtaRXdHU00rVmJZT0ZWNWxocTFpRGl0N2Z3dGxXdHRubU41Qno3YTBUcElNQmNxSjg3UWROZ2RUdXY4b3cyS2dKdXBrV0JEN20valZBQlVER0NpUXRqcXRIMDNPcGh5OEFMc2FNSTdHa012djVKVFdMRFIrVVd3L25DRXRJT3JEUkRmWGlvV2g5ZUFoVkRHWUtKckhjSEVPYWxVQ2Nja0N0by9wRjl6d1A2RDFWRkh2QW9hNlhKYnM4NE4xSEFjQXRIQ3FvdnpJeDV1LzJsVGZwQkkwQm9vc0ZNMWQweTJacE53cEVvNVllSEVWQT09

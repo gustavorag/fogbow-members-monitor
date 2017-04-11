@@ -56,6 +56,10 @@ body {
     .used-instance{
     	color: rgb(100,200,150)
     }
+    .loading-chart{
+    	height: 126px;
+    	width: 126px;
+    }
 }
 
 .fmm-nav div.row{
