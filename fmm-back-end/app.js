@@ -10,14 +10,14 @@ var port = 8800;
 
 var membersDetail;
 
-var baseLdap="dc=lsd,dc=ufcg,dc=edu,dc=br";
+var baseLdap="";
 var encrypt="";
 var privateKey="";
 var publicKey="";
-var username="fogbowadm";
-var password="f0gb0w4dm";
-var authUrl="ldap://ldap.lsd.ufcg.edu.br:389";
-var managerUrl="http://10.11.4.234:8182"
+var username="";
+var password="";
+var authUrl="";
+var managerUrl=""
 
 
 var baseDiretory="";
